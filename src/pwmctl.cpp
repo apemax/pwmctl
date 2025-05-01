@@ -20,11 +20,13 @@
 
 #include <fstream>
 #include <filesystem>
+#include <set>
 #include "pwmctl.h"
 
 void hwmon_list()
 {
   std::filesystem::path root_hwmon_dir{"/sys/class/hwmon"};
+  std::set<std::filesystem::path> pwm_sorted;
 
   for (auto const& root_hwmon_dir_entry : std::filesystem::directory_iterator{root_hwmon_dir})
   {
@@ -38,17 +40,45 @@ void hwmon_list()
         pwm_number = std::to_string(i);
         pwm_filename.append(pwm_number);
 
-        if (is_symlink(hwmon_dir_entry.path()))
+        if (hwmon_dir_entry.path().filename() == pwm_filename)
         {
-          std::filesystem::path hwmon_dir_new;
-
-          hwmon_dir_new = read_symlink(hwmon_dir_entry.path());
+          pwm_sorted.insert(hwmon_dir_entry.path().string());
         }
+      }
+      for (int i = 1; i <= 10; i++)
+      {
+        std::string pwm_filename = "pwm";
+        std::string pwm_number;
+        std::string pwm_enable = "_enable";
+
+        pwm_number = std::to_string(i);
+        pwm_filename.append(pwm_number);
+        pwm_filename.append(pwm_enable);
 
         if (hwmon_dir_entry.path().filename() == pwm_filename)
         {
-          std::cout << hwmon_dir_entry.path().string() << std::endl;
+          pwm_sorted.insert(hwmon_dir_entry.path().string());
         }
+      }
+    }
+  }
+  for (auto &file_path : pwm_sorted)
+  {
+    if(file_path.string().size() == 28)
+    {
+      std::cout << file_path.string() << std::endl;
+    }
+
+    for (unsigned int position = 0; position < file_path.string().size(); position++)
+    {
+      if(file_path.string().substr(position, 7) == "_enable")
+      {
+        std::ifstream pwm_enable_file(file_path.string());
+        std::string pwm_enable_output;
+
+        getline(pwm_enable_file, pwm_enable_output);
+
+        std::cout << "PWM Mode: " << pwm_enable_output << std::endl;
       }
     }
   }
