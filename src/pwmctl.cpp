@@ -27,6 +27,7 @@ void hwmon_list()
 {
   std::filesystem::path root_hwmon_dir{"/sys/class/hwmon"};
   std::set<std::filesystem::path> pwm_sorted;
+  std::set<std::filesystem::path> fan_sorted;
 
   for (auto const& root_hwmon_dir_entry : std::filesystem::directory_iterator{root_hwmon_dir})
   {
@@ -60,25 +61,53 @@ void hwmon_list()
           pwm_sorted.insert(hwmon_dir_entry.path().string());
         }
       }
+      for (int i = 1; i <= 10; i++)
+      {
+        std::string fan_filename = "fan";
+        std::string fan_number;
+        std::string fan_input = "_input";
+
+        fan_number = std::to_string(i);
+        fan_filename.append(fan_number);
+        fan_filename.append(fan_input);
+
+        if (hwmon_dir_entry.path().filename() == fan_filename)
+        {
+          fan_sorted.insert(hwmon_dir_entry.path().string());
+        }
+      }
     }
   }
-  for (auto &file_path : pwm_sorted)
+  for (auto &pwm_file_path : pwm_sorted)
   {
-    if(file_path.string().size() == 28)
+    if (pwm_file_path.string().size() == 28)
     {
-      std::cout << file_path.string() << std::endl;
+      std::cout << pwm_file_path.string() << std::endl;
     }
 
-    for (unsigned int position = 0; position < file_path.string().size(); position++)
+    for (unsigned int position = 0; position < pwm_file_path.string().size(); position++)
     {
-      if(file_path.string().substr(position, 7) == "_enable")
+      if (pwm_file_path.string().substr(position, 7) == "_enable")
       {
-        std::ifstream pwm_enable_file(file_path.string());
+        std::ifstream pwm_enable_file(pwm_file_path.string());
         std::string pwm_enable_output;
 
         getline(pwm_enable_file, pwm_enable_output);
 
-        std::cout << "PWM Mode: " << pwm_enable_output << std::endl;
+        std::cout << " PWM Mode: " << pwm_enable_output << std::endl;
+
+        for (auto &fan_file_path : fan_sorted)
+        {
+          if (fan_file_path.string().substr(22, 1) == pwm_file_path.string().substr(22, 1) && fan_file_path.string().substr(27, 1) == pwm_file_path.string().substr(27, 1))
+          {
+          std::ifstream fan_input_file(fan_file_path.string());
+          std::string fan_input_output;
+
+          getline(fan_input_file, fan_input_output);
+
+          std::cout << " Fan RPM: " << fan_input_output << std::endl;
+          }
+        }
       }
     }
   }
