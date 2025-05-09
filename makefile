@@ -6,7 +6,7 @@ BUILD_DIR = build
 BIN = pwmctl
 
 CC = g++
-CXXFLAGS = -I$(IDIR) -Werror -Wall -Wextra
+CXXFLAGS = -I$(IDIR) -Werror -Wall -Wextra -g
 LDFLAGS =
 
 _DEPS = pwmctl.h
