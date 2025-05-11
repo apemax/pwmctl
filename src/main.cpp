@@ -22,6 +22,8 @@
 
 int main(int argc, char const *argv[])
 {
+  const std::string version = "1.0.0";
+
   if(argc <= 1)
   {
     std::cout << "No options specified, Type -h for usage information." << std::endl;
@@ -40,6 +42,7 @@ int main(int argc, char const *argv[])
       std::cout << "-f   Select which fan to control." << std::endl;
       std::cout << "-m   Set the mode for the selected fan." << std::endl;
       std::cout << "-p   Set pwm value for selected fan." << std::endl;
+      std::cout << "-v   Display the version number of pwmctl." << std::endl;
       std::cout << "-h   Display this help." << std::endl;
       std::cout << std::endl;
       std::cout << "Example:" << std::endl;
@@ -47,6 +50,10 @@ int main(int argc, char const *argv[])
       std::cout << "pwmctl -f /sys/class/hwmon/hwmon1/pwm1 -m 1" << std::endl;
       std::cout << "Set pwm1 speed to 100:" << std::endl;
       std::cout << "pwmctl -f /sys/class/hwmon/hwmon1/pwm1 -p 100" << std::endl;
+    }
+    else if(first_option == "-v")
+    {
+      std::cout << "pwmctl " << version << std::endl;
     }
     else if(first_option == "-l")
     {
