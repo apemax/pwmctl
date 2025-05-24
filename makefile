@@ -29,7 +29,11 @@ $(BUILD_DIR):
 $(ODIR):
 	mkdir -p $@
 
-.PHONY: clean
+.PHONY: clean strip
 
 clean:
 	rm -f $(ODIR)/*.o $(BUILD_DIR)/$(BIN)
+
+strip:
+	objcopy --only-keep-debug $(BUILD_DIR)/$(BIN) $(BUILD_DIR)/$(BIN).debug
+	objcopy --strip-debug $(BUILD_DIR)/$(BIN)
