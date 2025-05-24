@@ -21,6 +21,8 @@ Options:
 
 -p   Set pwm value for selected fan.
 
+-v   Display the version number of pwmctl.
+
 -h   Display the help information.
 
 Example:
