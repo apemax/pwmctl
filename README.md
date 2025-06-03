@@ -1,6 +1,6 @@
 # pwmctl
 
-WARNING: This software can turn your computers fans off and potentially cause your system to overheat, Which can cause damage to your hardware. Please only use this software if you know what you are doing.
+## WARNING: This software can turn your computers fans off and potentially cause your system to overheat, Which can cause damage to your hardware. Please only use this software if you know what you are doing.
 
 pwmctl is a small command line program made to control the speed of the fans in your computer.
 
