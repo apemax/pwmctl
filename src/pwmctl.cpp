@@ -117,31 +117,46 @@ void hwmon_list()
 
 void set_pwm(std::string pwm_fan, std::string pwm_value)
 {
-  std::ofstream pwm_file(pwm_fan, std::ios::out);
+  std::string pwm_enable_file_name = pwm_fan;
+  pwm_enable_file_name.append("_enable");
 
-  pwm_file << pwm_value;
+  std::ifstream pwm_enable_file(pwm_enable_file_name);
+  std::string pwm_enable_file_output;
 
-  std::cout << "Waiting 5 seconds for fan speed to change..." << std::endl;
+  getline(pwm_enable_file, pwm_enable_file_output);
 
-  std::this_thread::sleep_for(std::chrono::seconds(5));
-
-  for (unsigned int position = 0; position < pwm_fan.size(); position++)
+  if (pwm_enable_file_output == "1")
   {
-    if (pwm_fan.substr(position, 3) == "pwm")
+    std::ofstream pwm_file(pwm_fan, std::ios::out);
+
+    pwm_file << pwm_value;
+
+    std::cout << "Waiting 5 seconds for fan speed to change..." << std::endl;
+
+    std::this_thread::sleep_for(std::chrono::seconds(5));
+
+    for (unsigned int position = 0; position < pwm_fan.size(); position++)
     {
-      std::string fan = "fan";
-      std::string fan_input = "_input";
-      std::string fan_input_path = pwm_fan;
-      fan_input_path.replace(24, 3, fan);
-      fan_input_path.append(fan_input);
+      if (pwm_fan.substr(position, 3) == "pwm")
+      {
+        std::string fan = "fan";
+        std::string fan_input = "_input";
+        std::string fan_input_path = pwm_fan;
+        fan_input_path.replace(24, 3, fan);
+        fan_input_path.append(fan_input);
 
-      std::ifstream fan_input_file(fan_input_path);
-      std::string fan_input_output;
+        std::ifstream fan_input_file(fan_input_path);
+        std::string fan_input_output;
 
-      getline(fan_input_file, fan_input_output);
+        getline(fan_input_file, fan_input_output);
 
-      std::cout << "Fan RPM: " << fan_input_output << std::endl;
+        std::cout << "Fan RPM: " << fan_input_output << std::endl;
+      }
     }
+  }
+  else
+  {
+    std::cout << "Warning: Unable to set fan speed, PWM Mode not set to manual." << std::endl;
   }
 }
 
