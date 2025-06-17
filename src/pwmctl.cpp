@@ -84,7 +84,14 @@ void hwmon_list()
   {
     if (pwm_file_path.string().size() == 28)
     {
+      std::ifstream pwm_file(pwm_file_path.string());
+      std::string pwm_file_output;
+
       std::cout << pwm_file_path.string() << std::endl;
+
+      getline(pwm_file, pwm_file_output);
+
+      std::cout << " PWM Value: " << pwm_file_output << std::endl;
     }
 
     for (unsigned int position = 0; position < pwm_file_path.string().size(); position++)
