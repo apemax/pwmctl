@@ -52,11 +52,10 @@ void hwmon_list()
       {
         std::string pwm_filename = "pwm";
         std::string pwm_number;
-        std::string pwm_enable = "_enable";
 
         pwm_number = std::to_string(i);
         pwm_filename.append(pwm_number);
-        pwm_filename.append(pwm_enable);
+        pwm_filename.append("_enable");
 
         if (hwmon_dir_entry.path().filename() == pwm_filename)
         {
@@ -67,11 +66,10 @@ void hwmon_list()
       {
         std::string fan_filename = "fan";
         std::string fan_number;
-        std::string fan_input = "_input";
 
         fan_number = std::to_string(i);
         fan_filename.append(fan_number);
-        fan_filename.append(fan_input);
+        fan_filename.append("_input");
 
         if (hwmon_dir_entry.path().filename() == fan_filename)
         {
@@ -146,11 +144,9 @@ void set_pwm(std::string pwm_fan, std::string pwm_value)
     {
       if (pwm_fan.substr(position, 3) == "pwm")
       {
-        std::string fan = "fan";
-        std::string fan_input = "_input";
         std::string fan_input_path = pwm_fan;
-        fan_input_path.replace(24, 3, fan);
-        fan_input_path.append(fan_input);
+        fan_input_path.replace(24, 3, "fan");
+        fan_input_path.append("_input");
 
         std::ifstream fan_input_file(fan_input_path);
         std::string fan_input_output;
