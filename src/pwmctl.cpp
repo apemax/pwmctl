@@ -177,5 +177,15 @@ void set_pwm_mode(std::string pwm_fan, std::string pwm_mode_value)
 
   std::ofstream pwm_file(pwm_fan, std::ios::out);
 
-  pwm_file << pwm_mode_value;
+  if (pwm_file.is_open())
+  {
+    pwm_file << pwm_mode_value;
+
+    std::cout << "PWM Mode set to: " << pwm_mode_value << std::endl;
+  }
+  else
+  {
+    std::cout << "Error: Unable to write to pwm _enable file." << std::endl;
+    std::cout << "Please make sure the specified pwm _enable file exists and that you have run pwmctl as root or with sudo." << std::endl;
+  }
 }
